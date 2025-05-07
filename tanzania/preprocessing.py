@@ -15,7 +15,7 @@ def map_travel_with(row: pd.Series, not_alone_value: str) -> str:
     else:
         return row['travel_with']
 
-def get_preprocessed_data(file_name: str, not_alone_value = 'Spouse'):
+def get_preprocessed_data(file_name: str, not_alone_value: str = 'Spouse') -> pd.DataFrame:
     """ load and preprocess data
 
     Args:
@@ -30,6 +30,8 @@ def get_preprocessed_data(file_name: str, not_alone_value = 'Spouse'):
     df['travel_with'] = df.apply(lambda row: map_travel_with(row, not_alone_value), axis = 1)
     df['most_impressing'] = df['most_impressing'].fillna('No comments')
     df = df.dropna(how="any", axis = 0)
-    df = pd.get_dummies(df, drop_first=True)
-    return df
+    return pd.get_dummies(df, drop_first=True)
 
+if __name__ == '__main__':
+    df = get_preprocessed_data('data/Train.csv')
+    print(f'loaded {df.shape[1]} columns, {df.shape[0]} rows')
