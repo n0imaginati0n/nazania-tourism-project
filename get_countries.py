@@ -125,7 +125,10 @@ def main():
         axis=1)
 
     df_all = df_all.drop(['Longitude', 'Latitude'], axis = 1)
+    df_all.columns = [c.lower() for c in df_all.columns]
+
     df_all.to_csv('data/distances.csv', index=False, encoding='utf-8', sep = ',')
+
 
     print(df_all)
 

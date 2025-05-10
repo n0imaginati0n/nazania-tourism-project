@@ -18,12 +18,14 @@ from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, A
 
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
-
-
 def main():
+    df_country = pd.read_csv('data/distances.csv')
+
     X = pd.read_csv('data/Train.csv')
     X = X.drop('ID', axis = 1)
     y = X.pop('total_cost')
+
+    
 
     print(X['country'].unique())
     return
