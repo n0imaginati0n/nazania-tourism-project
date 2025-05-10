@@ -18,18 +18,54 @@ from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, A
 
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
+countries_mapping_reverse = {
+    'CABO VERDE': 'CAPE VERDE',
+    'DJIBOUTI': 'DJIBOUT',
+    'CÔTE D\'IVOIRE': 'IVORY COAST',
+    'SOMALIA': 'SOMALI',
+    'CHINA, TAIWAN PROVINCE OF CHINA': 'TAIWAN',
+    'BOSNIA AND HERZEGOVINA': 'BOSNIA',
+    'COSTA RICA': 'COSTARICA',
+    'CZECHIA': 'CZECH REPUBLIC',
+    'DEMOCRATIC REPUBLIC OF THE CONGO': 'DRC',
+    'IRAN (ISLAMIC REPUBLIC OF)': 'IRAN',
+    'COMOROS': 'COMORO',
+    'MOROCCO': 'MORROCO',
+    'REPUBLIC OF KOREA': 'KOREA',
+    'RUSSIAN FEDERATION': 'RUSSIA',
+    'SWITZERLAND': 'SWIZERLAND',
+    'TRINIDAD AND TOBAGO': 'TRINIDAD TOBACCO',
+    'MALTA': 'MALT',
+    'UNITED ARAB EMIRATES': 'UAE',
+    'BULGARIA':'BURGARIA',
+    'PHILIPPINES': 'PHILIPINES',
+    'VIET NAM': 'VIETNAM',
+    'UNITED KINGDOM': 'SCOTLAND',
+    'SAUDI ARABIA': 'SAUD ARABIA',
+    'UKRAINE': 'UKRAIN',
+    'TFYR MACEDONIA': 'MACEDONIA'
+}
+
 def main():
+    countries_mapping = {}
+    for correct, incorrect in countries_mapping_reverse.items():
+        countries_mapping[incorrect] = correct
+
     df_country = pd.read_csv('data/distances.csv')
 
     X = pd.read_csv('data/Train.csv')
+    
     X = X.drop('ID', axis = 1)
     y = X.pop('total_cost')
 
+    X['country'] = X['country'].replace(countries_mapping)
+
+    X = X.merge(df_country, on='country', how='left')
+
+    #print(X.columns)
+    #print(X.head())
+
     
-
-    print(X['country'].unique())
-    return
-
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 42, test_size = 0.3)
 
     # imputation
@@ -42,16 +78,17 @@ def main():
                             'travel_with' : travel_with_val,
                             'total_male' : total_male_val,
                             'total_female': total_female_val,
-                            'most_impressing_val': most_impressing_val
+                            'most_impressing': most_impressing_val
                             })
     X_test = X_test.fillna({
                             'travel_with' : travel_with_val,
                             'total_male' : total_male_val,
                             'total_female': total_female_val,
-                            'most_impressing_val': most_impressing_val
+                            'most_impressing': most_impressing_val
                             })
 
-    # feature engineering
+
+    print('feature engineering')
     # person
     X_train['person'] = X_train['total_male'] + X_train['total_female']
     X_test['person'] = X_test['total_male'] + X_test['total_female']    
@@ -71,19 +108,20 @@ def main():
     #   start preprocess data
     #
 
+    print('data preprocessing')
     num_cols = [col for col in X_train.columns if X_train[col].dtype != 'object']
     cat_cols = [col for col in X_train.columns if col not in num_cols]
 
-    print(num_cols)
     # standard scaler
     scaler = StandardScaler().set_output(transform='pandas')
     X_train[num_cols] = scaler.fit_transform(X_train[num_cols])
     X_test [num_cols] = scaler.transform(X_test[num_cols])
 
     # onehot encoder ignoring diffeernt counties in train-test sets
+    print('train')
     ohe = OneHotEncoder(
         drop = 'first',
-        handle_unknown = 'ignore',
+        handle_unknown = 'infrequent_if_exist',
         sparse_output = False)
 
     ohe_array = ohe.fit_transform(X_train[cat_cols])
@@ -95,6 +133,7 @@ def main():
     X_train = X_train.drop(cat_cols, axis = 1)
     X_train = pd.concat([X_train, ohe_df], axis = 1)
 
+    print('test')
     ohe_array1 = ohe.transform(X_test[cat_cols])
     ohe_df1 = pd.DataFrame(
         ohe_array1,
@@ -108,6 +147,10 @@ def main():
     #   end preprocess data
     #===============================================================================
 
+    print('go estimate')
+
+    print(X_train.isna().value_counts())
+    return
 
     estimators = [
         ('LinearRegression', LinearRegression(), {}),

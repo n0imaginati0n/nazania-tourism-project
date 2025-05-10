@@ -120,7 +120,7 @@ def main():
     tanzania_latd  = df_countries[ df_countries['Country'] == 'UNITED REPUBLIC OF TANZANIA'].iloc[:, 2].iloc[0]
     tanzania_longd = df_countries[ df_countries['Country'] == 'UNITED REPUBLIC OF TANZANIA'].iloc[:, 3].iloc[0]
 
-    df_all['distance_to_tanzania_km'] = df_all.apply(
+    df_all['distance'] = df_all.apply(
         lambda row: calc_distance(row, tanzania_latd, tanzania_longd),
         axis=1)
 
