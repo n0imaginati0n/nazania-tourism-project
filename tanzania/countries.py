@@ -131,8 +131,8 @@ def get_countries_data() -> pd.DataFrame:
 
     df_missed_salaries_countries = pd.DataFrame({
         'country': [ itm[0] for itm in missed_salaries_countries ],
-        'continent': [ itm[1] for itm in missed_salaries_countries ],
-        'median_salary': [ itm[2] for itm in missed_salaries_countries ]
+        'continent': [ itm[2] for itm in missed_salaries_countries ],
+        'median_salary': [ itm[1] for itm in missed_salaries_countries ]
     })
 
     df_salary = pd.concat([df_salary, df_missed_salaries_countries], ignore_index = True)

@@ -23,9 +23,11 @@ def main():
     X = pd.read_csv('data/Train.csv')
     X = extend_train_test_with_countries(X)
 
+    X.to_csv('data/merged.csv')
+
     X = X.drop('ID', axis = 1)
     y = X.pop('total_cost')
-
+    # return
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 42, test_size = 0.3)
 
@@ -111,7 +113,7 @@ def main():
     print('go estimate')
 
     print(X_train.isna().value_counts())
-    return
+    #return
 
     estimators = [
         ('LinearRegression', LinearRegression(), {}),
