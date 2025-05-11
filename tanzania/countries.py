@@ -70,6 +70,7 @@ def calc_distance(row: pd.Series, tanzania_latd: float, tanzania_longd: float):
 def get_countries_data() -> pd.DataFrame:
     load_extra_data('data')
 
+    # Dataset loaded from [Github](https://gist.github.com/ofou/df09a6834a8421b4f376c875194915c9)
     df_countries = pd.read_csv('data/country_data_ext.csv')
     df_salary = pd.read_csv('data/salary_data_ext.csv')
 

@@ -20,7 +20,6 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from tanzania import extend_train_test_with_countries
 
 def main():
-
     X = pd.read_csv('data/Train.csv')
     X = extend_train_test_with_countries(X)
 
