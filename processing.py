@@ -15,55 +15,17 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, AdaBoostRegressor
 
-
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
-countries_mapping_reverse = {
-    'CABO VERDE': 'CAPE VERDE',
-    'DJIBOUTI': 'DJIBOUT',
-    'CÔTE D\'IVOIRE': 'IVORY COAST',
-    'SOMALIA': 'SOMALI',
-    'CHINA, TAIWAN PROVINCE OF CHINA': 'TAIWAN',
-    'BOSNIA AND HERZEGOVINA': 'BOSNIA',
-    'COSTA RICA': 'COSTARICA',
-    'CZECHIA': 'CZECH REPUBLIC',
-    'DEMOCRATIC REPUBLIC OF THE CONGO': 'DRC',
-    'IRAN (ISLAMIC REPUBLIC OF)': 'IRAN',
-    'COMOROS': 'COMORO',
-    'MOROCCO': 'MORROCO',
-    'REPUBLIC OF KOREA': 'KOREA',
-    'RUSSIAN FEDERATION': 'RUSSIA',
-    'SWITZERLAND': 'SWIZERLAND',
-    'TRINIDAD AND TOBAGO': 'TRINIDAD TOBACCO',
-    'MALTA': 'MALT',
-    'UNITED ARAB EMIRATES': 'UAE',
-    'BULGARIA':'BURGARIA',
-    'PHILIPPINES': 'PHILIPINES',
-    'VIET NAM': 'VIETNAM',
-    'UNITED KINGDOM': 'SCOTLAND',
-    'SAUDI ARABIA': 'SAUD ARABIA',
-    'UKRAINE': 'UKRAIN',
-    'TFYR MACEDONIA': 'MACEDONIA'
-}
+from tanzania import extend_train_test_with_countries
 
 def main():
-    countries_mapping = {}
-    for correct, incorrect in countries_mapping_reverse.items():
-        countries_mapping[incorrect] = correct
-
-    df_country = pd.read_csv('data/distances.csv')
 
     X = pd.read_csv('data/Train.csv')
-    
+    X = extend_train_test_with_countries(X)
+
     X = X.drop('ID', axis = 1)
     y = X.pop('total_cost')
-
-    X['country'] = X['country'].replace(countries_mapping)
-
-    X = X.merge(df_country, on='country', how='left')
-
-    #print(X.columns)
-    #print(X.head())
 
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 42, test_size = 0.3)
@@ -170,7 +132,7 @@ def main():
         rmse = round( mean_squared_error(y_test, y_pred) ** 0.5, 2)
         r2 = round( r2_score(y_test, y_pred), 4)
         print(f'{name:30}: RMSE = {rmse:12}, R2 = {r2}')
-    
+
     estimators_grid = [
         ('SGDRegressor', SGDRegressor(max_iter = 5000), {
             'alpha': [0.0001, 0.001, 0.01, 0.1, 1],
@@ -194,7 +156,7 @@ def main():
     ]
 
     print("\nStart Searching Better params")
-    
+
     for name, est, parm in estimators_grid:
         gs = GridSearchCV(
             estimator = est,
