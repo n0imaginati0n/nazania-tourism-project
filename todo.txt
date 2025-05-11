@@ -1,0 +1,2 @@
+- make better color theme. add more contrast - background color bright,
+	figure color darker. i like lemon-canary
