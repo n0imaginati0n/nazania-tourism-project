@@ -1,2 +1,13 @@
 - make better color theme. add more contrast - background color bright,
 	figure color darker. i like lemon-canary
+
+
+Random Forest Regressor
+	R2: 0.4265,
+	RMSE: 9110322.97,
+	best params: {'model__bootstrap': True, 'model__max_depth': 15, 'model__max_features': 'sqrt', 'model__n_estimators': 50}
+
+Gradient Boosting Regressor
+	R2: 0.4571,
+	RMSE: 8864305.02,
+	best params: {'model__learning_rate': 0.05, 'model__max_depth': 5, 'model__max_features': 'log2', 'model__n_estimators': 150}
