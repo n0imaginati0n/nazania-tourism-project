@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import warnings
+warnings.filterwarnings("ignore")
 
 import numpy as np
 import pandas as pd
@@ -23,26 +24,34 @@ def main():
     X = pd.read_csv('data/Train.csv')
     X = extend_train_test_with_countries(X)
 
-    X.to_csv('data/merged.csv')
-
     X = X.drop('ID', axis = 1)
     y = X.pop('total_cost')
-    # return
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 42, test_size = 0.3)
 
     # imputation
-    travel_with_val     = X_train['travel_with'].mode()[0]
-    most_impressing_val = X_train['most_impressing'].mode()[0]
-    total_male_val      = X_train['total_male'].mode()[0]
-    total_female_val    = X_train['total_female'].mode()[0]
 
-    X_train = X_train.fillna({
-                            'travel_with' : travel_with_val,
-                            'total_male' : total_male_val,
-                            'total_female': total_female_val,
-                            'most_impressing': most_impressing_val
-                            })
+    # define values
+    travel_with_val = X_train.query('total_male + total_female == 1')[ 'travel_with'].mode()[0]
+    most_impressing_val = 'No comments'
+    total_male_val = X_train['total_male'].mode()[0]
+    total_female_val = X_train['total_female'].mode()[0]
+    
+    # fill rows, wehere 'total_male + total_female == 1' with the mode = 'Alone'
+    mask = (X_train['total_male'] + X_train['total_female']) == 1
+    X_train.loc[mask, 'travel_with'] = travel_with_val
+
+    X_train = X_train.join(y_train)
+
+    # drop non-filled 'total_male', 'total_female' - 5 items + 28 items
+    X_train = X_train.dropna(subset=['total_male', 'total_female', 'travel_with'])
+    y_train = X_train.pop('total_cost')
+    # X_train = X_train.fillna({
+    #                         'travel_with' : travel_with_val,
+    #                         'total_male' : total_male_val,
+    #                         'total_female': total_female_val,
+    #                         'most_impressing': most_impressing_val
+    #                         })
     X_test = X_test.fillna({
                             'travel_with' : travel_with_val,
                             'total_male' : total_male_val,
@@ -64,7 +73,6 @@ def main():
     pack_cols = [col for col in X_train.columns if 'package_' in col]
     X_train['package'] = X_train[pack_cols].apply(lambda row: row.map({'Yes' : 1, 'No' : 0}).sum(), axis = 1)
     X_test['package']  = X_test[pack_cols].apply(lambda row: row.map({'Yes' : 1, 'No' : 0}).sum(), axis = 1)
-
 
 
     #===============================================================================
@@ -111,9 +119,6 @@ def main():
     #===============================================================================
 
     print('go estimate')
-
-    print(X_train.isna().value_counts())
-    #return
 
     estimators = [
         ('LinearRegression', LinearRegression(), {}),
