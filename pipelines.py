@@ -135,35 +135,33 @@ estimators = [
         'alpha': [0.0001, 0.001, 0.01, 0.1, 1, 10],
         'l1_ratio': [0.1, 0.5, 0.7, 0.9, 1]
         }),
-    ('Decision Tree Regressor', DecisionTreeRegressor(), {
-        'max_depth': range(2, 20, 2),
+    ('KNeighborsRegressor', KNeighborsRegressor(n_jobs = -1), {
+        'n_neighbors': [3, 5, 7, 10],
+        'weights': ['uniform', 'distance'],
+        'p': [1, 2, 3]
+    }),
+    ('Decision Tree Regressor', DecisionTreeRegressor(max_features = 'sqrt'), {
+        'max_depth': [2, 5, 10, 15, 20],
         'min_samples_split': range(2, 5),
-        'min_samples_leaf': [1, 2],
-        'max_features': [None, 'sqrt', 'log2']}),
-    ('Random Forest Regressor', RandomForestRegressor(), {
-        'max_depth': range(2, 20, 2),
-        'min_samples_split': range(2, 5),
-        'min_samples_leaf': [1, 2],
+        'min_samples_leaf': [1, 2]}),
+    ('Random Forest Regressor', RandomForestRegressor(n_jobs = -1), {
+        'max_depth': [2, 5, 10, 15, 20],
         'max_features': [None, 'sqrt', 'log2'],
-        'n_estimators': range(50, 200, 10),
+        'n_estimators': [50, 70, 90, 110, 150, 200],
         'bootstrap': [True, False]}),
     ('Ada Boost Regressor', AdaBoostRegressor(), {
-        'n_estimators': range(50, 200, 10),
+        'n_estimators': [50, 70, 90, 110, 150, 200],
         'learning_rate': [0.01, 0.05, 0.1, 0.5, 1],
         'loss': ['linear', 'square', 'exponential']}),
     ('Gradient Boosting Regressor', GradientBoostingRegressor(), {
-        'n_estimators': range(50, 200, 10),
+        'n_estimators': [50, 70, 90, 110, 150, 200],
         'learning_rate': [0.01, 0.05, 0.1, 0.2, 0.3],
-        'max_depth': [2,3],
-        'min_samples_split': range(2, 5),
-        'min_samples_leaf': [1, 2],
+        'max_depth': [2, 3, 4, 5],
         'max_features': [None, 'sqrt', 'log2']}),
-    ('SGD Regressor', SGDRegressor(), {
+    ('SGD Regressor', SGDRegressor(max_iter = 5000), {
         'alpha': [0.0001, 0.001, 0.01, 0.1, 1],
         'penalty': ['l2', 'l1', 'elasticnet'],
         'l1_ratio': [0.1, 0.5, 0.9],
-        'learning_rate': ['constant', 'optimal', 'invscaling', 'adaptive'],
-        'eta0': [0.001, 0.01, 0.1]
     })
 ]
 
