@@ -2,7 +2,7 @@ from sklearn.linear_model import ElasticNet
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import mean_squared_error, r2_score
 
-def elasticnet_regression(X, y):
+def elasticnet_regression(X_train, X_test, y_train, y_test):
     # Define hyperparameter grid
     param_grid = {
         'alpha': [0.001, 0.01, 0.1, 1.0, 10],
@@ -19,16 +19,16 @@ def elasticnet_regression(X, y):
     )
 
     # Fit the model
-    grid_search.fit(X, y)
+    grid_search.fit(X_train, y_train)
 
     # Get best model
     best_model = grid_search.best_estimator_
     best_params = grid_search.best_params_
 
     # Predict and evaluate
-    predictions = best_model.predict(X)
-    rmse = mean_squared_error(y, predictions, squared=False)
-    r2 = r2_score(y, predictions)
+    predictions = best_model.predict(X_test)
+    rmse = mean_squared_error(y_test, predictions, squared=False)
+    r2 = r2_score(y_test, predictions)
 
     # Output
     print("Best ElasticNet Parameters:", best_params)

@@ -2,7 +2,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import mean_squared_error, r2_score
 
-def gradient_boosting_regression(X, y):
+def gradient_boosting_regression(X_train, X_test, y_train, y_test):
     # Define hyperparameter grid
     param_grid = {
         'n_estimators': [100, 200],
@@ -20,18 +20,18 @@ def gradient_boosting_regression(X, y):
     )
 
     # Fit the model
-    grid_search.fit(X, y)
+    grid_search.fit(X_train, y_train)
 
     # Get best model and parameters
     best_model = grid_search.best_estimator_
     best_params = grid_search.best_params_
 
     # Predict using the best model
-    predictions = best_model.predict(X)
+    predictions = best_model.predict(X_test)
 
     # Evaluate performance
-    rmse = mean_squared_error(y, predictions, squared=False)
-    r2 = r2_score(y, predictions)
+    rmse = mean_squared_error(y_test, predictions, squared=False)
+    r2 = r2_score(y_test, predictions)
 
     # Print results
     print("Best Gradient Boosting Parameters:", best_params)
