@@ -37,7 +37,7 @@ def get_preprocessed_data(file_name: str, not_alone_value: str = 'Spouse') -> pd
 
     # apply log1p normalization to numerical columns, but not to 'total_cost'
     numeric_cols = ['total_female', 'total_male', 'night_mainland', 'night_zanzibar']
-    df[numeric_cols] = df[numeric_cols].apply(np.log1p)
+    # df[numeric_cols] = df[numeric_cols].apply(np.log1p)
     return pd.get_dummies(df, drop_first=True)
 
 def get_preprocessed_data_no_imputation(file_name: str, not_alone_value: str = 'Spouse') -> pd.DataFrame:
